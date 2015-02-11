@@ -1,0 +1,68 @@
+@mixin rounded( $radius: 10px) {
+  border-radius: $radius;
+  -moz-border-radius: $radius;
+  -webkit-border-radius: $radius;
+}
+
+
+a {
+    border-bottom:1px dotted #000;
+    color:#303030;
+    text-decoration: none;
+    &:hover { border-bottom: 0; }
+}
+a.dialog-opener{
+  border-bottom:0;
+}
+
+.dummy-input { color: #b8b8b8 !important; }
+
+
+
+.help-text {
+    display: inline-block;
+    vertical-align: middle;
+    border: none;
+    cursor: help;
+    position: relative;
+    width: 18px;
+    height: 18px;
+    background: image-url('question.png') no-repeat center center transparent;
+    &:hover:after {
+        content: attr(tooltip);
+        display: block;
+        background-color: #000;
+        opacity: 0.5;
+        -moz-opacity: 0.5;
+        -webkit-opacity: 0.5;
+        filter: Alpha(opacity=50);
+        @include rounded( 4px );
+        padding: 4px 8px;
+        width: 130px;
+        text-align: center;
+        color: #fff;
+        position: absolute;
+        right: -146px;
+        top: 8px;
+    }
+}
+
+#paid_schedule_session {
+  height: auto;
+  letter-spacing: 0.05em;
+  margin-left: -205px;
+  margin-top: -150px;
+  width: 350px;
+}
+.dialog-window > div#security_wrapper {
+  height: auto;
+}
+#exp_group {
+  float: left;
+  width: 135px;
+}
+
+.padded{
+  padding: 10px;
+}
+

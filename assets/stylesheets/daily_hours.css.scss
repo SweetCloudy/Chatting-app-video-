@@ -1,0 +1,54 @@
+// Place all the styles related to the DailyHours controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+
+#dh_wrap{
+  &.profile-block{
+    padding-left:0 !important;
+    width:757px !important;
+  }
+
+  li.gray{
+    background-color:#f4f5f7;
+    border-top:1px solid #eeeeee;
+    border-bottom:1px solid #eeeeee;
+    color:#4d4d4d;
+  }
+  li{
+    font-size: 13px;
+    padding: 10px 0 10px 40px;
+    color:#4d4d4d;
+    
+    b{
+      color: #272727;
+      padding-top:10px;
+      display: inline-block;
+      width: 75px;
+    }
+  }
+  select{
+    margin: 0 30px;
+  }
+  li:first-child{
+    padding-top:0;
+  }
+  li.last{
+    text-align:center;
+  }
+  
+  .button{
+    width: 235px;
+    margin-top: 15px;
+  }
+  
+  span.daily_to{
+    color: black;
+  }
+}
+
+body.daily_hours.index{
+  #page{
+    padding-top:0;
+  }
+}

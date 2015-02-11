@@ -1,0 +1,31 @@
+- title @title
+#page.about
+  %div
+    .nav
+      %span Also see:
+      = link_to "Lawyer FAQs", about_attorneys_path, :class => 'custom_arrow'
+    .content_outer
+      .content
+        %h1 About Lawdingo
+        %br
+        %p Lawdingo connects people who need legal advice with lawyers who can offer it. Right now. Without anyone leaving their home or office. Using video conference, phone and email as a medium for legal consultations, Lawdingo increases choice and lessens hassle for consumers and attorneys alike. 
+        %br
+        %p Lawdingo's HQ is in San Francisco. The company was founded by Nikhil Nirmel, an internet entrepreneur who was formely involved with the growth of Yelp and Yodle.
+        %br
+        %p We have an excellent set of advisors and investors but are always looking to meet and work with new creative, technical and analytical minds.
+        %br
+        %p 
+          General inquiries can be directed to 
+          %a{:href => 'mailto:info@lawdingo.com'}info@lawdingo.com 
+          and Lawdingo's founder/CEO can be reached at 
+          %a{:href => 'mailto:nikhil@lawdingo.com'}nikhil@lawdingo.com.
+        %br
+        %p Thanks so much for stopping by!
+        %p - Team Lawdingo
+        %br
+        %h3 Ready to get started?
+        %p.custom_arrow
+          %a{:href => lawyers_path} Get legal advice
+        %p.custom_arrow
+          %a{:href => new_lawyer_path} Apply to be on Lawdingo as an attorney
+    .clear

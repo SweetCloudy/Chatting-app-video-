@@ -1,0 +1,70 @@
+.appointment-form{:id => "appointment_form_#{lawyer.id}", :data => { :id => lawyer.id, :full_name => lawyer.full_name }}
+  .message{:style => "display:none"}
+  %form{:action => appointments_path, :method => "POST"}
+    %h2.popup_head Book an appointment with #{lawyer.full_name}
+
+    %div.error{:style => "display:none"}
+
+    - if @states
+      .appointment_state
+        Your state:
+        %br
+        .appointment_state_bot
+          = select_tag 'appointment[state_id]', options_from_collection_for_select(@states, "id", "name", @auto_detected_state.try(:id)), :prompt => "Select state", :validate => true, :class=>'select_small'
+    - if @practice_areas
+      .appointment_legal_matter
+        Legal matter:
+        %br
+        .appointment_area_bot
+          = select_tag 'appointment[practice_area_id]', options_for_select(@practice_areas.map{|x| [x.name, x.id, {:is_national => x.is_national}]}), :prompt => "Type of law", :class=>'select_small'
+
+    %p Available appointments (select one)
+
+    %div.available-appointments
+      - lawyer.next_available_days(4).each_with_index do |d, i|
+        %ul
+          %li.title
+            %span.appointment-time{:class => "day day-#{i}"} 
+              - if d === Date.today
+                Today
+              - elsif d === Date.tomorrow
+                Tomorrow
+              - else 
+                #{d.strftime("%a, %m/%d")}
+          - times = lawyer.available_times(d)
+          - times.each_with_index do |t, j|
+            %li{:class => (j > 2) ? "hidden" : ""}
+              %a.appointment-time{:href => "#", "data-time" => t.strftime("%Y-%m-%d %H:%M:%S"), "data-time-formatted" => t.strftime("%-l:%M %p on %A, %-m/%-e")}
+                #{t.strftime("%l:%M%p")}
+
+          - if times.length > 3
+            %li
+              %a.more{:href => "javascript:void(0)"}
+                More
+
+    %h2.appointment-info
+
+    = hidden_field(:appointment, :time)
+    = hidden_field(:appointment, :lawyer_id, :value => lawyer.id)
+
+    %h3
+      %label What would you like to discuss? (optional)
+    =text_area(:appointment, :message)
+
+    / %label Your preferred contact method
+    / %ul
+    /   %li
+    /     =radio_button(:appointment, :appointment_type, :phone, :checked => true)
+    /     Phone
+    /     = text_field(:appointment, :contact_number)
+    /   %li
+    /     =radio_button(:appointment, :appointment_type, :video)
+    /     Video
+    /%hr/
+    %h3
+      %label Your phone number (required):
+    = text_field :appointment, :contact_number, :value => current_user.try(:phone), :required => :required, :placeholder => "phone number"
+    %br/
+    = submit_tag(current_user.try(:stripe_customer_token).present? ? "Book Appointment" : "Continue...", :class => "button submit_appointment_button")
+    %br/
+    %span.fine-print.red#appointment_warning

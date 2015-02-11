@@ -1,0 +1,89 @@
+@mixin available_appointments($num){
+  div.available-appointments{
+    width: $num * 105px;
+    margin: 0 auto 20px auto;
+    height: 122px;
+    ul {
+      float: left;
+      li {
+        width: 104px;
+        text-align: center;
+        margin: 10px 0;
+        &.title {
+          margin: 5px 0 15px 0;
+        }
+      }
+    }
+    a{
+      text-decoration:none;
+      text-transform:uppercase;
+      font-size:11px;
+      font-weight:bold;
+      color:#313131;
+      &.selected {
+        border: 0px;
+        color: red;
+        cursor: default;
+        &:hover {
+          color: red;
+        }
+      }
+    }
+    a:focus {outline: none; }
+    a:hover{
+      color:#1076e8;
+    }
+    span.day{
+      border: 1px solid #d9dbdd;
+      padding: 3px 4px;
+      color: #757575;
+      font-size: 11px;
+      font-weight:bold;
+      background: #e2e4e6;
+      -moz-border-radius: 5px;
+      -webkit-border-radius: 5px;
+      text-decoration:none;
+      text-transform:uppercase;
+      font-size:11px;
+    }
+    
+    .times{
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: bold;
+      padding-left: 20px;
+      display:inline-block;
+      background: image-url('clock_icon.png') no-repeat;
+      height:20px;
+      .grey{
+        display:inline;
+        width: 50px;
+        color: grey;
+      }
+    }
+    
+    .day-0, .day-1, .day-2, .day-3{
+        border: 1px solid #d9dbdd;
+        padding: 3px 5px;
+        color: #757575;
+        font-size: 12px;
+        background: #e2e4e6;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+        text-decoration: none;
+        text-transform: uppercase;
+        font-size: 11px;
+        font-weight: bold;
+      }
+  }
+  a.appointments{
+    text-decoration:none;
+    color:#313131;
+    font-size:13px;
+    display:inline-block;
+    border-bottom:1px dotted #BBC1C4;
+  }
+  a.appointments:hover{
+    border-bottom:0;
+  }
+}

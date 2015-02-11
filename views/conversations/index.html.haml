@@ -1,0 +1,105 @@
+.profile.summary_of_sessions
+  - if current_user.is_lawyer?
+    = render partial: "lawyers/menu", locals: { lawyer: @user }
+    
+  .profile-block.same_height
+    - if current_user.is_lawyer?
+      - if @conversations.size.zero?
+        %h2 You haven’t had any legal sessions yet.
+      - else
+        %h2 Your summary of earnings and sessions:
+        %table.summary
+          %thead{:style => "font-weight:bold;"}
+            %tr
+              %td Client Name
+              %td Session Start
+              %td Duration of Session
+              %td Paid Duration
+              %td Rate
+              %td.last Amount Earned
+          %tbody
+            - @conversations.each do |con|
+              %tr{:class => cycle("white", "gray")}
+                %td
+                  = con.client_name
+                %td
+                  = con.start_date
+                %td
+                  = seconds_in_string con.duration
+                %td
+                  = seconds_in_string con.billed_time
+                %td
+                  = number_to_currency con.lawyer_rate
+                  \/min
+                %td.last
+                  = number_to_currency con.lawyer_earning
+            - user = current_user
+            %tr.total.gray
+              %td
+                = pluralize @conversations.map {|c| c.client_id}.uniq.count, "Client", "Clients"
+              %td
+                = @conversations.size
+                Sessions
+              %td
+                = seconds_in_string user.total_session_duration
+              %td
+                = seconds_in_string user.total_paid_duration
+              - avg_rate = user.total_earning == 0? 0 : (user.total_earning/(user.total_paid_duration.to_f/60))
+              %td
+                = number_to_currency avg_rate
+                \/min
+              %td.last
+                = number_to_currency user.total_earning.to_i
+        / p>Checks are mailed at the end of the each month. Would you like it sooner? Just email to <a href="payments@lawdingo.com">payments@lawdingo.com</a>.</p
+        %p
+          Payments are made at the end of the month. Prefer a check? Want it sooner? Email
+          %a{:href => "mailto:payments@lawdingo.com"} payments@lawdingo.com
+          with any requests.
+    - else
+      - unless @conversations.present?
+        %h2 You haven’t had any legal sessions yet.
+      - else   
+        %table.summary
+          %thead{:style => "font-weight:bold;"}
+            %tr
+              %td Lawyer Name
+              %td Session Start
+              %td Duration of Session
+              %td Paid Duration
+              %td Rate
+              %td Lawdingo Fee
+              %td Amount Billed
+          %tbody
+            - @conversations.each do |con|
+              %tr
+                %td
+                  = con.lawyer_name
+                %td
+                  = con.start_date
+                %td
+                  = seconds_in_string con.duration
+                %td
+                  = seconds_in_string con.billed_time
+                %td
+                  = number_to_currency con.lawyer_rate
+                  \/min
+                %td
+                  = number_to_currency con.lawdingo_charge
+                %td
+                  = number_to_currency con.billed_amount
+            - user = current_user
+            %tr.total
+              %td= pluralize @conversations.map{|c| c.lawyer_id}.uniq.count, "Lawyer", "Lawyers"
+              %td
+                = @conversations.size
+                Sessions
+              %td
+                = seconds_in_string user.total_session_duration
+              %td
+                = seconds_in_string user.total_paid_duration
+              - avg_rate = user.total_spending == 0? 0 : (user.total_spending/(user.total_paid_duration.to_f/60))
+              %td
+                = number_to_currency avg_rate
+                &nbsp; min
+              %td= number_to_currency @conversations.map{|c| c.lawdingo_charge}.sum
+              %td= number_to_currency user.total_spending.to_i

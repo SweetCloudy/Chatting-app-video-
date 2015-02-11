@@ -1,0 +1,71 @@
+#page.call-payment
+  %h1.form-header= @appointment ? 'Book An Appointment' : 'Start a legal consultation'
+  %div
+    .process-wrapper
+      .process-header
+        .process-bar
+        .first-step.steps 1
+        .second-step.steps.active 2
+        .third-step.steps 3
+        .clear
+        %p.first-notice.notices= @appointment ? 'Select Time' : 'Select Lawyer' 
+        %p.second-notice.notices Add Payment info
+        %p.third-notice.notices= @appointment ? 'Connect Automatically' : 'Talk to lawyer'
+      .process_notice
+        - if @appointment
+          %h3 To book an appointment with #{@lawyer.full_name}, you need to have your payment info on file. 
+          %p.info Lawdingo will call you at the designated time and connect you to #{@lawyer.first_name}. The first #{@lawyer.free_consultation_duration} minutes will be completely free, and if you talk longer you'll just be billed at #{ lawyer_rate @lawyer }.
+        - else
+          %h3 First #{@lawyer.free_consultation_duration} minutes are completely free. After #{@lawyer.free_consultation_duration} minutes costs #{ lawyer_rate @lawyer }.
+          %p.info We ask that you enter your payment information to start the consultation
+      .apply-form
+        .card-info
+          = form_for(current_user, :url => user_update_card_details_path(current_user), :method => :put, :html => {:id => :new_callpayment}) do |f|
+            = f.hidden_field :stripe_card_token
+            %table.card_user_info
+              %tbody
+                %tr.cards_row
+                  %td Credit Card
+                  %td.cards
+                    = image_tag('visa_icon.png')
+                    = image_tag('mc_icon.png')
+                    = image_tag('ae_icon.png')
+                    = image_tag('discover_icon.png')
+                
+                %tr
+                  %td{:colspan=>2}
+                    %table.card_info_table
+                      %tbody
+                        %tr
+                          %td.labels Credit Card #:
+                          %td= text_field_tag 'card[number]', nil, :required => :required, :validate => true
+                          %td.separator
+                          %td.labels Expires on:
+                          %td
+                            = select_month nil, {add_month_numbers: true}, {name: 'card[exp_month]', id: "card_month", :required => :required, :validate => true}
+                            = select_year nil, {start_year: Date.today.year, end_year: Date.today.year+15}, {name: 'card[exp_year]', id: "card_year", :required => :required, :validate => true}
+                        %tr
+                          %td.labels CVV Code:
+                          %td
+                            = text_field_tag 'card[cvc]', nil, :required => :required, :validate => true
+                            %a.cvv-info{:href => '#', :tooltip => :cvv}
+                            .tooltip.big.cvv 3 digit code on the back of your card
+                          %td.separator
+                          %td.labels
+                          %td
+                %tr
+                  %td.buttons_left
+                  %td.buttons{:colspan=>2}
+                    = submit_tag 'Continue', :class=>"button", id: "submit_callpayment"
+                    %span#siteseal
+                      %script{:type=>"text/javascript", :src => 'https://seal.godaddy.com/getSeal?sealID=DY6qS9Z5Yb3G0eASdQ2SOHDc5j8MndNNTbTEvYzffdVwSYY0hv2'}
+                %tr
+                  %td
+                  %td
+                    You will only be billed if you use more than #{@lawyer.free_consultation_duration} minutes.
+                    
+                %tr.row_notice
+                  %td
+                  %td.card_notice#stripe_error
+                    %noscript JavaScript is not enabled and is required for this form. First enable it in your web browser
+                  

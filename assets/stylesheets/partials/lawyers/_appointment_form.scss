@@ -1,0 +1,79 @@
+@import "available_appointments";
+
+@mixin appointment_form {
+
+  font-size: 13px;
+
+  div.message {
+    margin: 10px;
+  }
+
+  form {
+    margin: 0px;
+  }
+  
+  h2 {
+    font-size: 15px;
+    font-weight: bold;
+    color:#404040;
+    margin: 0;
+  }
+
+  h2.popup_head{
+    border-bottom:1px solid #d6d6d6;
+    padding: 17px 0;
+    background: #fbfbfb; /* Old browsers */
+    background: -moz-linear-gradient(top,  #fbfbfb 0%, #ececec 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fbfbfb), color-stop(100%,#ececec)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #fbfbfb 0%,#ececec 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #fbfbfb 0%,#ececec 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #fbfbfb 0%,#ececec 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  #fbfbfb 0%,#ececec 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fbfbfb', endColorstr='#ececec',GradientType=0 ); /* IE6-8 */
+    
+  }
+  p {
+    margin: 5px 0 10px 15px;
+    text-align:left;
+  }
+
+  label {
+    display: block;
+    clear: both;
+  }
+
+  textarea {
+    height: 100px;
+    width: 375px;
+    border-radius: 5px;
+    border: 1px solid #C2C2C2;
+    margin-left: 13px !important;
+    resize: vertical;
+  }
+  .fine-print { 
+    font-size: 0.9em; 
+  }
+  .appointment_state{
+    padding-left: 20px; 
+    padding-top: 10px;
+    height: 55px; 
+    float: left;
+    .appointment_state_bot{
+      margin-top:5px; 
+    }
+  }
+  .appointment_legal_matter{
+    height: 55px; 
+    padding-top: 10px;
+    padding-left: 200px; 
+    .appointment_area_bot{
+      margin-top:5px; 
+    }
+  }
+  #appointment_warning{
+    margin-top: 10px;
+    padding: 0 15px;
+    display: block;
+  }
+  @include available_appointments(4);
+}

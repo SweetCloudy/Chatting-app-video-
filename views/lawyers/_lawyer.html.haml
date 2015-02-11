@@ -1,0 +1,122 @@
+- cache("lawyers/_lawyer/#{lawyer.id}-#{logged_in?}-#{(logged_in? && current_user.is_lawyer?)}-#{lawyer.updated_at.to_i}", :expires_in => 1.hour) do
+  .row.lawyer.parent_container{:id => "lawyer_#{lawyer.id}", "data-lawyer-id" => lawyer.id, "data-lawyer-slug" => lawyer.slug}
+    = hidden_field(:current, :lid)
+    .left.row_block
+      .avatar
+        = lawyer.photo
+      - if (lawyer.yelp_business_id.present? && !!lawyer.yelp[:reviews]) || lawyer.reviews.count.to_i > 0
+        - if lawyer.yelp_business_id.present? && !!lawyer.yelp[:reviews]
+          .stars
+            = image_tag lawyer.yelp[:rating_img_url]
+            .clear
+          .yelp_reviews
+            %a{:href => lawyer_path(lawyer, slug: lawyer.slug, anchor: "reviews")} 
+              = content_tag :span, pluralize(lawyer.yelp[:review_count], "#{link_to image_tag('miniMapLogo.png'), 'http://www.yelp.com', :rel => :nofollow}" + "review").html_safe, class: ""
+        - else
+          .stars
+            - if lawyer.reviews.average(:rating).to_i > 0
+              = link_to_unless_current content_tag(:div, "", class: "rating", data: { score: lawyer.reviews.average(:rating).to_i }), lawyer_path(lawyer, slug: lawyer.slug, anchor: "reviews"), class: "rating-stars"
+          %a{:href => lawyer_path(lawyer, slug: lawyer.slug, anchor: "reviews")} 
+            = content_tag :span, pluralize(lawyer.reviews.count, "review", "reviews"), class: "reviews"
+      =link_to lawyer_path(lawyer, slug: lawyer.slug), :target=>"_blank" do
+        .view_profile_wrapper
+          .view_profile_button.hidden
+            View Profile
+      .clear
+    
+    .middle.row_block
+      %h1= link_to_unless_current "#{lawyer.full_name}", lawyer_path(lawyer, slug: lawyer.slug)
+      .online_icons
+        = render(:partial => "lawyers/online_icons", :locals => {:lawyer => lawyer})
+      
+      .clear
+      .description
+        
+        - if lawyer.personal_tagline.present?
+          %p.lawyer_tagline
+            #{lawyer.short_personal_tagline}
+          %p.lawyer_long_tagline.hidden
+            #{lawyer.long_personal_tagline}
+
+        = send_message_from_lawyer_mini_profile lawyer
+        .expanded_info
+          - unless lawyer.bar_memberships.blank?
+            %ul.bar_memberships
+              %li
+                Licensed in #{lawyer.licensed_states}
+            - if lawyer.license_year.present?
+              %ul.license_years
+                %li #{pluralize years_practicing_law(lawyer), "year", "years'"} experience
+            .clear
+          %ul
+            - unless lawyer.practice_areas.blank?
+              %li
+                Advises on 
+                - if @selected_practice_area.present? 
+                  #{@selected_practice_area.name}
+                - else 
+                  #{lawyer.practice_area_names} law
+            - if lawyer.offerings.count > 0
+              %li.offerings_item
+                Offers
+                %a.offerings{:href => lawyer_path(lawyer, slug: lawyer.slug, anchor: "flat-fee")} #{lawyer.offerings.count} flat-fee #{pluralize(lawyer.offerings.count, 'service').split(" ", 2)[1]}
+                .offerings_wrapper
+                  %table
+                    - lawyer.offerings.each do |offering|
+                      %tr
+                        %td
+                          %span.offering_name 
+                            = link_to "#{offering.name}", offering
+                        %td
+                          %span
+                            #{number_to_currency(offering.fee, precision: 0)}
+            - if lawyer.school.present?
+              %li.offerings_item.hidden.law_school
+                Law school:  
+                = lawyer.school.name
+        -#.free
+          %table
+            %tbody
+              %tr
+                %td
+                  %p= start_or_schedule_button(lawyer)
+        .clear
+        .free_section_container
+          = render(:partial => "lawyers/talk_button", :locals => {:lawyer => lawyer})
+          .free_button_explanation
+            %p.free_bold= free_message(lawyer)
+            = free_message_then lawyer
+        .expander_container
+          %span +
+          .tooltip.expander See more info
+    .right.row_block
+      - if lawyer.daily_hours.present?
+        .appointments_title
+          Available appointments  
+        .available-appointments
+          = render(:partial => "lawyers/lawyer_appointments", :locals => {:lawyer => lawyer, :ndays=> 2})
+          - if lawyer.time_zone
+            .times
+              %span.grey Times in #{lawyer.timezone_abbreviation}
+              = "(#{lawyer.timezone_utc_offset}:00)"
+          .clear
+        .view_all_wrapper
+          %a.appointments{:href => 'javascript:void(0)', :class => (logged_in? && current_user.is_lawyer?) ? 'only_for_client' : 'appt-select'}
+            View All Appointments
+      - else
+        .no_appointments
+          %p Sorry,
+          %p No Appointments
+          %p Are Available
+  
+      - # content for the modal dialog we are going to display
+      .appointment_form_wrapper{:style => "display:none;"}
+        = render(:partial => "/lawyers/appointment_form", :locals => {:lawyer => lawyer})
+  
+  :javascript
+    $(".row .rating").raty({
+        path: "/assets/raty",
+        hintList: ['', '', '', '', '', ''],
+        readOnly: true,
+        start: function() {return $(this).data("score")}
+    });
